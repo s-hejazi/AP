@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: AntiPatternDetection
+Bundle-SymbolicName: AntiPatternDetection;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: antipatterndetection.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.core.resources;bundle-version="3.10.1",
+ org.eclipse.jdt.core;bundle-version="3.11.2"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
