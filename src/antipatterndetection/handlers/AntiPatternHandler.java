@@ -1,8 +1,10 @@
 package antipatterndetection.handlers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -24,13 +26,13 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.WhileStatement;
@@ -44,7 +46,7 @@ public class AntiPatternHandler extends AbstractHandler {
 	List <String> classVariables = new ArrayList<String>();
 	String currentMethod;
 	IMethod [] methodList;
-	int totalAntipatternCount = 0;
+	Map<String, ArrayList<Integer>> flaggedLines = new HashMap< String, ArrayList<Integer>>();
 	public AntiPatternHandler() {
 	}
 
@@ -55,9 +57,7 @@ public class AntiPatternHandler extends AbstractHandler {
 		parser.setResolveBindings(true);
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot root = workspace.getRoot();
-		// Get all projects in the workspace
 		IProject[] projects = root.getProjects();
-		// Loop over all projects
 		for (IProject project : projects) {
 			try {
 				if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
@@ -72,7 +72,7 @@ public class AntiPatternHandler extends AbstractHandler {
 								     // get methods list
 								     methodList = typeDeclaration.getMethods();
 								   //TODO : REMOVE     
-									System.out.println("checking class "+ unit.getElementName()+ "\n");									
+									//System.out.println("checking class "+ unit.getElementName()+ "\n");									
 									getUnitVariables(unit);
 									findDbAccessingMethods(unit); 
 									resetLists();
@@ -83,8 +83,7 @@ public class AntiPatternHandler extends AbstractHandler {
 			for (IPackageFragment mypackage : packages) 
 					if (mypackage.getKind() == IPackageFragmentRoot.K_SOURCE) 
 						for (ICompilationUnit unit : mypackage.getCompilationUnits()) 
-							findAntiPatterns(unit);
-						
+							findAntiPatterns(unit);					
 				}
 			} 
 		catch (CoreException e) {
@@ -93,24 +92,21 @@ public class AntiPatternHandler extends AbstractHandler {
 		}
 		//TODO
 		//make in a report format
-		System.out.println(totalAntipatternCount);
-			//TODO : REMOVE
-		System.out.println("DB MEthods:");
-		for(IMethod s:dbMethods){
-			System.out.println(s.getElementName());
-			//
-		}
-
+		System.out.println(flaggedLines.size()+ " lines flagged:");;
+			System.out.println(flaggedLines);
+		//	System.out.println(dbMethods.size());
+			
 		return null;
 	}
+	
 	boolean isEntityClass;
-	 public boolean entityClass(){
+	private boolean entityClass(){
 		isEntityClass = false;
 		List <String> annotationList = new ArrayList<String>();
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		cu.accept(new ASTVisitor() {
 		public boolean visit(MarkerAnnotation node) {
-		//System.out.println("Annotaion: " + node.getTypeName().getFullyQualifiedName());
+		//System.out.println("Annotation: " + node.getTypeName().getFullyQualifiedName());
 		annotationList.add(node.getTypeName().getFullyQualifiedName());
 		return true;
 		}  
@@ -122,7 +118,7 @@ public class AntiPatternHandler extends AbstractHandler {
 		
 	 return isEntityClass;
 	 }
-	public void getUnitVariables(ICompilationUnit unit){
+	private void getUnitVariables(ICompilationUnit unit){
 		parser.setSource(unit);
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		cu.accept(new ASTVisitor(){
@@ -135,8 +131,9 @@ public class AntiPatternHandler extends AbstractHandler {
 		});
 	}
 
-public void findDbAccessingMethods(ICompilationUnit unit){
+	private void findDbAccessingMethods(ICompilationUnit unit){
 	parser.setSource(unit);
+	parser.setResolveBindings(true);
 	final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 	cu.accept(new ASTVisitor(){
 		public boolean visit(MethodDeclaration node) { 
@@ -153,14 +150,11 @@ public void findDbAccessingMethods(ICompilationUnit unit){
 		public boolean visit(SimpleName node){
 			if (classVariables.contains(node.getIdentifier())){
 				for (IMethod method : methodList)
-					//TODO same name?
 					if(method.getElementName().equals(currentMethod) && !dbMethods.contains(method)){
 							dbMethods.add(method);
-							addCallersToDbMethods(method);
-
+						addCallersToDbMethods(method);
 						//TODO : REMOVE
-							System.out.println(currentMethod + " is accessing db becasue of "+ node.getIdentifier()+"\n" );
-						break;
+						//System.out.println(currentMethod + " is accessing db becasue of "+ node.getIdentifier()+"\n" );
 						}
 			}
 			return true;
@@ -169,12 +163,12 @@ public void findDbAccessingMethods(ICompilationUnit unit){
 	});		
 	}
 
-public void resetLists(){
+	private void resetLists(){
 	classVariables.clear();
 	methodList = null;
 }
 
-public void addCallersToDbMethods(IMethod m){
+	private void addCallersToDbMethods(IMethod m){
 	    HashSet<IMethod> callers = getCallersOf(m);
 		for(IMethod i : callers){
 			if(!dbMethods.contains(i))
@@ -183,7 +177,7 @@ public void addCallersToDbMethods(IMethod m){
 	}
 
 @SuppressWarnings("restriction")
-public HashSet<IMethod> getCallersOf(IMethod m) {
+	private HashSet<IMethod> getCallersOf(IMethod m) {
 	CallHierarchy callHierarchy = CallHierarchy.getDefault();	 
 	 IMember[] members = {m};	 
 	 MethodWrapper[] methodWrappers = callHierarchy.getCallerRoots(members);
@@ -222,45 +216,67 @@ public HashSet<IMethod> getCallersOf(IMethod m) {
 	 }
 	 
 
-	 
+		boolean loopNode; 
 
 	private void findAntiPatterns(ICompilationUnit unit) {
-
 		parser.setSource(unit);
-
+		parser.setResolveBindings(true);
+		loopNode = false;
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		cu.accept(new ASTVisitor(){
-/*			public boolean visit(ClassOrInterfaceDeclaration n, A arg){
-				
-				return true;
-			}*/
+			
 			public boolean visit (ForStatement node) {
-				for(IMethod method : dbMethods)
-					if(node.getBody().toString().contains(method.getElementName()))
-						System.out.println("Instance found in "+ cu.getJavaElement().getElementName()+ ", For loop in line "+cu.getLineNumber(node.getStartPosition()));       		       		
-						totalAntipatternCount++;
+				loopNode = true;
 				return true;
 			}
 			public boolean visit (WhileStatement node) {
-				for(IMethod method : dbMethods)
-					if(node.getBody().toString().contains(method.getElementName()))
-						System.out.println("Instance found in "+cu.getJavaElement().getElementName()+ " : While loop in line "+cu.getLineNumber(node.getStartPosition()));       		
-				totalAntipatternCount++;
+				loopNode = true;
 				return true;
 			}
 			public boolean visit (EnhancedForStatement node) {
-				for(IMethod method : dbMethods)
-					if(node.getBody().toString().contains(method.getElementName()))
-						System.out.println("Instance found in "+cu.getJavaElement().getElementName()+ " : Enhanced For loop in line "+cu.getLineNumber(node.getStartPosition()));       		
-				totalAntipatternCount++;
+				loopNode = true;
 				return true;
 			}
 			public boolean visit (DoStatement node) {
-				for(IMethod method : dbMethods)
-					if(node.getBody().toString().contains(method.getElementName()))
+				loopNode = true;
+			/*	for(IMethod method : dbMethods)
+					if(node.getBody().toString().contains(method.getElementName())){
 						System.out.println("Instance found in "+cu.getJavaElement().getElementName()+ " : Do While loop in line "+cu.getLineNumber(node.getStartPosition()));       		
-				totalAntipatternCount++;
+				totalAntipatternCount++;}*/
 				return true;
+			}
+			
+			public boolean visit (MethodInvocation node) {			
+				if(loopNode)
+				for(IMethod method : dbMethods){
+					//if(node.resolveMethodBinding().getKey().equals(method.getKey())){
+					if(node.getName().toString().equals(method.getElementName()))
+						if(!flaggedLines.containsKey(cu.getJavaElement().getElementName())){
+							ArrayList <Integer> lines = new ArrayList<>();
+							lines.add(cu.getLineNumber(node.getStartPosition()));
+							flaggedLines.put(cu.getJavaElement().getElementName(), lines);
+						}
+						else if(!flaggedLines.get(cu.getJavaElement().getElementName()).contains(cu.getLineNumber(node.getStartPosition()))){
+							ArrayList <Integer> lines = new ArrayList<>();
+							lines = flaggedLines.get(cu.getJavaElement().getElementName());
+							lines.add(cu.getLineNumber(node.getStartPosition()));
+							flaggedLines.put(cu.getJavaElement().getElementName(), lines);
+					//	System.out.println("Instance found in "+cu.getJavaElement().getElementName()+ " in line "+cu.getLineNumber(node.getStartPosition()));       					
+					}
+					}
+				return true;
+			}
+			public void endVisit (ForStatement node) {
+				loopNode = false;
+			}
+			public void endVisit (WhileStatement node) {
+				loopNode = false;	
+			}
+			public void endVisit (EnhancedForStatement node) {
+				loopNode = false;	
+			}
+			public void endVisit (DoStatement node) {
+				loopNode = false;
 			}
 		});
 	}
