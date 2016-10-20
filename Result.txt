@@ -1,0 +1,392 @@
+* Class AutoBundleActivity.java :
+line 87 : Method generatePermutations
+line 90 : Method createIndividualOptionField
+line 205 : Method createIndividualOptionField
+* Class ResourcePurgeServiceImpl.java :
+line 122 : Method checkParents
+line 163 : Method merge
+* Class AdminAbstractController.java :
+line 343 : Method merge
+line 395 : Method mergeItems
+* Class CustomUrlSiteMapGenerator.java :
+line 64 : Method exhaustedNodesContains
+line 83 : Method getBaseDirectory
+* Class FileSystemFileServiceProvider.java :
+line 114 : Method getNonPersistentSite
+* Class BLCSystemPropertyResourceResolver.java :
+line 104 : Method generateUri
+* Class PromotableOrderImpl.java :
+line 97 : Method addUrl
+line 135 : Method runTransactionalOperation
+line 144 : Method resolveSystemProperty
+line 200 : Method buildDynamicProperty
+line 239 : Method addPageFieldToDTO
+line 270 : Method buildPageDTO
+line 278 : Method passesPageRules
+line 318 : Method passesPageRules
+line 327 : Method generateUri
+* Class DataDTOToMVELTranslator.java :
+line 84 : Method addUrl
+* Class OrderToPaymentRequestDTOServiceImpl.java :
+line 235 : Method buildStructuredContentDTO
+* Class FulfillmentEndpoint.java :
+line 79 : Method processContentRules
+line 206 : Method processContentRules
+line 235 : Method buildStructuredContentDTO
+* Class GiftWrapOrderItemImpl.java :
+line 73 : Method getAllowUnnamedImageManipulation
+* Class FulfillmentItemPricingActivityTest.java :
+line 90 : Method fillInURLMapForCategory
+* Class StaticAssetViewController.java :
+line 90 : Method createOrRetrieveCopyInstance
+* Class SolrIndexServiceImpl.java :
+line 220 : Method getAllSkus
+line 321 : Method multiply
+line 393 : Method multiply
+line 542 : Method multiply
+line 602 : Method multiply
+* Class DatabaseSearchServiceImpl.java :
+line 238 : Method getPricingModel
+* Class AdminBasicEntityController.java :
+line 458 : Method multiply
+line 471 : Method multiply
+line 1193 : Method getSkuMediaXref
+line 1206 : Method createOrRetrieveCopyInstance
+* Class BasicPersistenceModule.java :
+line 492 : Method generateUri
+line 494 : Method addUrl
+line 517 : Method generateUri
+line 1276 : Method addUrl
+line 1279 : Method addCategorySiteMapEntries
+* Class MergeXmlConfigResource.java :
+line 93 : Method populateBillingAddressOnRequest
+* Class OrderOfferProcessorImpl.java :
+line 97 : Method populateCustomerOnRequest
+line 103 : Method populateShippingAddressOnRequest
+line 230 : Method populateCreditCardOnRequest
+line 236 : Method checkBasicAvailablility
+line 352 : Method checkBasicAvailablility
+line 353 : Method retrieveQuantityAvailable
+line 363 : Method retrieveQuantityAvailable
+line 366 : Method adjustmentIsNotGoodEnoughToBeApplied
+line 494 : Method applyOrderItemAdjustment
+* Class StreamingTransactionCapableUtil.java :
+line 94 : Method updateItemAdjustment
+* Class UpdateCartServiceImpl.java :
+line 92 : Method updateItemAdjustment
+line 104 : Method verifyMaxCustomerUsageThreshold
+* Class StructuredContentServiceImpl.java :
+line 163 : Method verifyMaxCustomerUsageThreshold
+line 209 : Method calculateMaxUsesForItemCriteria
+line 214 : Method restrictTarget
+line 297 : Method restrictTarget
+* Class i18nUpdateCartServiceExtensionHandler.java :
+line 103 : Method restrictQualifier
+line 110 : Method restrictTarget
+* Class CheckoutEndpoint.java :
+line 73 : Method restrictTarget
+* Class CategoriesWrapper.java :
+line 47 : Method restrictQualifier
+* Class OrderServiceImpl.java :
+line 463 : Method restrictQualifier
+line 467 : Method restrictQualifier
+line 634 : Method split
+line 661 : Method addPromotableOrderItem
+line 822 : Method getAllOrderItems
+line 828 : Method addPromotableOrderItem
+* Class PromotableCandidateItemOfferImpl.java :
+line 133 : Method getDiscountableOrderItems
+* Class OrderItemPriceDetailWrapper.java :
+line 73 : Method getAllPromotableOrderItemPriceDetails
+* Class OrderPaymentWrapper.java :
+line 118 : Method getDiscountableOrderItems
+line 161 : Method getDiscountableOrderItems
+* Class SimpleTaxProvider.java :
+line 92 : Method getAllOrderItems
+line 93 : Method getAllOrderItems
+line 115 : Method getQuantity
+* Class CategorySiteMapGenerator.java :
+line 92 : Method checkForItemRequirements
+* Class FulfillmentGroupMerchandiseTotalActivity.java :
+line 47 : Method checkForItemRequirements
+* Class MVELToDataWrapperTranslator.java :
+line 114 : Method multiply
+line 121 : Method multiply
+* Class SkuImpl.java :
+line 882 : Method couldOfferApplyToRequestDTO
+line 1232 : Method couldOfferApplyToTimePeriod
+* Class ProductOptionWrapper.java :
+line 86 : Method couldOfferApplyToCustomer
+* Class AbstractBaseProcessor.java :
+line 86 : Method couldOfferApplyToOrder
+line 96 : Method couldOfferApplyToOrder
+line 140 : Method applyOrderOffer
+line 164 : Method compareAndAdjustOrderAndItemOffers
+line 327 : Method synchronizeItemPriceDetails
+line 374 : Method synchronizeItemQualifiers
+line 484 : Method buildItemPriceDetailKey
+* Class SkuCustomPersistenceHandler.java :
+line 222 : Method processMatchingDetails
+line 233 : Method synchronizeFulfillmentGroupAdjustments
+* Class ProductSiteMapGenerator.java :
+line 74 : Method couldOfferApplyToOrder
+line 85 : Method couldOfferApplyToOrder
+* Class NodeReplaceInsert.java :
+line 112 : Method applyFulfillmentGroupOffer
+* Class PersistencePackageFactoryImpl.java :
+line 114 : Method couldOfferApplyToOrder
+line 143 : Method couldOfferApplyToOrder
+* Class OfferServiceImpl.java :
+line 170 : Method offerMeetsSubtotalRequirements
+line 192 : Method applyItemOffer
+* Class PromotableOrderItemPriceDetailImpl.java :
+line 295 : Method filterOrderLevelOffer
+line 300 : Method filterItemLevelOffer
+line 310 : Method calculatePotentialSavingsForOrderItem
+line 313 : Method markRelatedQualifiersAndTargets
+line 415 : Method markQualifiers
+line 419 : Method markTargets
+line 428 : Method couldOfferApplyToOrder
+line 431 : Method getMoney
+line 578 : Method getMoney
+* Class SiteServiceImpl.java :
+line 250 : Method getMoney
+* Class CatalogEndpoint.java :
+line 241 : Method createOrRetrieveCopyInstance
+line 382 : Method createOrRetrieveCopyInstance
+line 405 : Method createOrRetrieveCopyInstance
+line 428 : Method convertToMoney
+line 446 : Method convertToMoney
+line 464 : Method createGiftWrapOrderItem
+line 482 : Method createDiscreteOrderItem
+line 514 : Method createDiscreteOrderItem
+line 532 : Method checkActive
+line 553 : Method checkActive
+* Class CustomerWrapper.java :
+line 79 : Method addItemToFulfillmentGroup
+line 100 : Method getKey
+* Class OrderWrapper.java :
+line 115 : Method getKey
+line 124 : Method addFulfillmentGroupToOrder
+line 133 : Method save
+line 142 : Method removeItem
+line 153 : Method addItem
+* Class MergeManager.java :
+line 250 : Method removeItemInternal
+* Class FulfillmentGroupOfferProcessorImpl.java :
+line 63 : Method removeItem
+line 68 : Method itemMatches
+line 190 : Method itemMatches
+* Class OrderItemWrapper.java :
+line 124 : Method createPopulatedOrderMultishipOption
+line 133 : Method createPopulatedOrderMultishipOption
+line 156 : Method addItemToFulfillmentGroup
+line 167 : Method itemMatches
+* Class CategoryBreadCrumbTag.java :
+line 65 : Method itemMatches
+* Class ValidateAddRequestActivity.java :
+line 205 : Method bundleItemMatches
+* Class FulfillmentGroupWrapper.java :
+line 124 : Method createFulfillmentGroupItemFromOrderItem
+line 135 : Method checkSkuForMatch
+line 145 : Method determineCategory
+* Class SolrSearchServiceImpl.java :
+line 528 : Method createDiscreteOrderItemRequest
+* Class CartTest.java :
+line 51 : Method moveItemToOrder
+* Class AbstractRuleBuilderFieldService.java :
+line 85 : Method addOrderItemToOrder
+* Class DynamicFieldPersistenceHandlerHelper.java :
+line 126 : Method removeItemFromOrder
+* Class PageServiceImpl.java :
+line 220 : Method addOrderItemToOrder
+line 235 : Method addOrderItemToOrder
+line 244 : Method getOiFgiMap
+* Class ProductImpl.java :
+line 940 : Method checkSkuForMatch
+* Class LegacyCartServiceImpl.java :
+line 72 : Method resolveFulfillmentType
+line 74 : Method addItemToFulfillmentGroup
+* Class GoogleAnalyticsProcessor.java :
+line 178 : Method updateItemQuantity
+* Class ItemOfferProcessorImpl.java :
+line 75 : Method getName
+line 90 : Method isItemTaxable
+line 154 : Method determineItemTaxRate
+line 155 : Method determineItemTaxRate
+line 404 : Method divide
+line 406 : Method sumItemAmount
+line 459 : Method countNumberOfUnits
+line 490 : Method applyDifferenceToAmount
+line 494 : Method applyDifferenceToProratedAdj
+line 495 : Method getMoney
+line 661 : Method countExistingUsesOfBundle
+* Class OrderMultishipOptionServiceImpl.java :
+line 164 : Method countMaximumApplications
+line 196 : Method populateItemMatchesForSku
+* Class I18nSolrSearchServiceExtensionHandler.java :
+line 145 : Method getMoney
+* Class GoogleUniversalAnalyticsProcessor.java :
+line 276 : Method getMoney
+* Class FulfillmentItemPricingActivity.java :
+line 122 : Method getMoney
+line 145 : Method getMoney
+line 149 : Method getMoney
+line 153 : Method getMoney
+line 220 : Method shouldApplyFeeToFulfillmentGroup
+* Class FormBuilderServiceImpl.java :
+line 585 : Method getFacetValues
+line 894 : Method buildIncrementalIndex
+line 898 : Method buildDocument
+* Class SkuSiteMapGenerator.java :
+line 84 : Method buildDocument
+line 95 : Method getPropertyValues
+* Class SearchFilterItemTag.java :
+line 90 : Method getPropertyValues
+* Class CategoryImpl.java :
+line 158 : Method isFacetAvailable
+line 1280 : Method getSolrTaggedFieldString
+* Class PageServiceUtility.java :
+line 92 : Method getPropertyNameForFieldFacet
+* Class TotalActivity.java :
+line 61 : Method appendFieldToQuery
+line 118 : Method setLocale
+line 119 : Method findStoreDistance
+line 120 : Method deleteCart
+line 130 : Method deleteCustomer
+line 144 : Method multiply
+* Class PriceOrderIfNecessaryActivity.java :
+line 126 : Method wrapSummary
+* Class RuleFieldValidator.java :
+line 111 : Method wrapSummary
+* Class LegacyOrderServiceImpl.java :
+line 229 : Method wrapSummary
+line 424 : Method wrapSummary
+line 430 : Method wrapSummary
+line 479 : Method wrapSummary
+line 609 : Method wrapSummary
+line 820 : Method wrapSummary
+line 897 : Method wrapSummary
+line 899 : Method wrapSummary
+* Class ProductBundleImpl.java :
+line 122 : Method wrapSummary
+line 132 : Method wrapSummary
+line 134 : Method wrapDetails
+line 203 : Method wrapDetails
+line 206 : Method wrapSummary
+line 208 : Method wrapSummary
+line 210 : Method wrapSummary
+* Class OrderHistoryEndpoint.java :
+line 64 : Method wrapSummary
+* Class OrderItemImpl.java :
+line 883 : Method wrapSummary
+* Class SearchFacetDTOServiceImpl.java :
+line 66 : Method wrapSummary
+line 85 : Method wrapSummary
+line 97 : Method wrapSummary
+* Class FulfillmentGroupServiceImpl.java :
+line 111 : Method wrapSummary
+line 311 : Method wrapSummary
+line 320 : Method wrapSummary
+line 339 : Method wrapSummary
+line 340 : Method wrapSummary
+* Class ConsolidateFulfillmentFeesActivity.java :
+line 75 : Method wrapSummary
+* Class PromotableOrderItemImpl.java :
+line 176 : Method wrapSummary
+* Class AdminEntityServiceImpl.java :
+line 363 : Method wrapSummary
+* Class DatabaseOrderLockManager.java :
+line 69 : Method wrapSummary
+line 74 : Method wrapSummary
+* Class MapStructurePersistenceModule.java :
+line 586 : Method wrapSummary
+* Class ValidateAndConfirmPaymentActivity.java :
+line 149 : Method wrapSummary
+line 150 : Method wrapDetails
+line 151 : Method unwrap
+line 158 : Method wrapSummary
+* Class ChildCategoriesCustomPersistenceHandler.java :
+line 80 : Method wrapSummary
+* Class BundleOrderItemImpl.java :
+line 193 : Method wrapSummary
+line 226 : Method wrapSummary
+line 253 : Method wrapSummary
+* Class RuleFieldPersistenceProvider.java :
+line 428 : Method wrapSummary
+* Class ProductWrapper.java :
+line 162 : Method wrapSummary
+line 176 : Method unwrap
+line 202 : Method wrapSummary
+line 212 : Method wrapSummary
+line 222 : Method wrapSummary
+line 234 : Method wrapSummary
+line 267 : Method getUrl
+* Class CriteriaTranslatorImpl.java :
+line 270 : Method getUrl
+* Class MergePoint.java :
+line 86 : Method copyPhone
+* Class MergeCartServiceImpl.java :
+line 140 : Method copyPhone
+line 146 : Method copyPhone
+* Class AdminNavigationServiceImpl.java :
+line 83 : Method getDatabaseLockAcquisitionNumRetries
+line 99 : Method getDatabaseLockPollingIntervalMs
+line 113 : Method getVariation
+line 155 : Method getVariation
+line 164 : Method translateOrderItem
+* Class PageSiteMapGenerator.java :
+line 84 : Method translateOrderItem
+line 95 : Method checkAvailabilityInLocale
+* Class OrderImpl.java :
+line 779 : Method checkAvailabilityInLocale
+* Class FulfillmentGroupItemStrategyImpl.java :
+line 96 : Method getMaxPageSize
+line 123 : Method isActive
+line 228 : Method getUrlKey
+* Class LegacyMergeCartServiceImpl.java :
+line 192 : Method getClassNameForSection
+line 361 : Method create
+line 369 : Method buildAuthorizedSectionsList
+* Class SolrHelperServiceImpl.java :
+line 442 : Method isUserAuthorizedToViewSection
+line 619 : Method isUserAuthorizedToViewSection
+line 689 : Method checkPermissions
+* Class FulfillmentGroupItemWrapper.java :
+line 93 : Method checkPermissions
+* Class SearchResultsWrapper.java :
+line 95 : Method getRecordsForCollection
+line 104 : Method extractPropertiesFromPersistentEntity
+line 113 : Method extractPropertiesFromPersistentEntity
+* Class StoreServiceImpl.java :
+line 74 : Method extractPropertiesFromPersistentEntity
+* Class OfferServiceUtilitiesImpl.java :
+line 261 : Method buildSpecialRestrictions
+line 266 : Method buildStandardRestrictions
+line 379 : Method getMapRecord
+line 395 : Method buildRestriction
+* Class TranslationFormBuilderServiceImpl.java :
+line 113 : Method convertDTOToMvelString
+* Class AdminCatalogServiceImpl.java :
+line 163 : Method convertDTOToMvelString
+* Class InventoryServiceImpl.java :
+line 125 : Method addField
+line 185 : Method addField
+line 187 : Method translateErrorMessage
+line 228 : Method translateErrorMessage
+* Class OrderItemServiceImpl.java :
+line 306 : Method addListGrid
+line 308 : Method addListGrid
+line 361 : Method appendExpression
+* Class BroadleafShippingInfoController.java :
+line 185 : Method createRuleDataDTO
+line 186 : Method buildMVEL
+line 187 : Method getJavaLocale
+* Class DiscreteOrderItemImpl.java :
+line 261 : Method addField
+line 294 : Method buildCollectionListGrid
+* Class CategoryWrapper.java :
+line 116 : Method addListGrid
+line 150 : Method getLocalizedEditToViewMessage
+line 186 : Method orderItemsSemanticallyEqual
+282 lines flagged in total.
