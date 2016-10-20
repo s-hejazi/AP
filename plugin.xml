@@ -8,11 +8,6 @@
             name="Sample Category"
             id="AntiPatternDetection.commands.category">
       </category>
-      <command
-            name="one to one"
-            categoryId="AntiPatternDetection.commands.category"
-            id="AntiPatternDetection.commands.sampleCommand">
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -35,13 +30,14 @@
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
+               id="AntiPatternDetection.menus.sampleMenu"
                label="Antipattern Detection"
-               mnemonic="M"
-               id="AntiPatternDetection.menus.sampleMenu">
+               mnemonic="M">
             <command
                   commandId="AntiPatternDetection.commands.sampleCommand"
-                  mnemonic="S"
-                  id="AntiPatternDetection.menus.sampleCommand">
+                  id="AntiPatternDetection.menus.sampleCommand"
+                  label="Detect One-by-One"
+                  mnemonic="S">
             </command>
          </menu>
       </menuContribution>
@@ -52,8 +48,8 @@
             <command
                   commandId="AntiPatternDetection.commands.sampleCommand"
                   icon="icons/sample.gif"
-                  tooltip="Say hello world"
-                  id="AntiPatternDetection.toolbars.sampleCommand">
+                  id="AntiPatternDetection.toolbars.sampleCommand"
+                  tooltip="Say hello world">
             </command>
          </toolbar>
       </menuContribution>

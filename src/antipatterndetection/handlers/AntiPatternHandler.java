@@ -1,9 +1,13 @@
 package antipatterndetection.handlers;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -49,6 +53,7 @@ public class AntiPatternHandler extends AbstractHandler {
 	IField[] classVariables;
 	String currentMethod;
 	Map<String, ArrayList<Integer>> flaggedLines = new HashMap< String, ArrayList<Integer>>();
+	ArrayList <String> flaggedMethods = new ArrayList<String>();
 	public AntiPatternHandler() {
 	}
 
@@ -105,11 +110,18 @@ public class AntiPatternHandler extends AbstractHandler {
 		}
 			//TODO
 		//make in a report format
-		int count = 0;
+		try {
+			writeResult(flaggedLines, flaggedMethods);
+			System.out.println("analysis finished.");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+/*		int count = 0;
 		for(ArrayList<Integer> l : flaggedLines.values())
 			count+= l.size();
 		System.out.println(count+ " lines flagged in:");
-		System.out.println(flaggedLines);
+		System.out.println(flaggedLines);*/
 		return null;
 	}
 	
@@ -260,12 +272,14 @@ public class AntiPatternHandler extends AbstractHandler {
 										ArrayList <Integer> lines = new ArrayList<>();
 										lines.add(cu.getLineNumber(node.getStartPosition()));
 										flaggedLines.put(cu.getJavaElement().getElementName(), lines);
+										flaggedMethods.add(node.getName().toString());
 									}
 									else if(!flaggedLines.get(cu.getJavaElement().getElementName()).contains(cu.getLineNumber(node.getStartPosition()))){
 										ArrayList <Integer> lines = new ArrayList<>();
 										lines = flaggedLines.get(cu.getJavaElement().getElementName());
 										lines.add(cu.getLineNumber(node.getStartPosition()));
 										flaggedLines.put(cu.getJavaElement().getElementName(), lines);
+										flaggedMethods.add(node.getName().toString());
 										//	System.out.println("Instance found in "+cu.getJavaElement().getElementName()+ " in line "+cu.getLineNumber(node.getStartPosition()));       					
 								}
 								}
@@ -304,7 +318,26 @@ public class AntiPatternHandler extends AbstractHandler {
 			}
 		});
 	}
-	
+	public static void writeResult(Map<String, ArrayList<Integer>> flaggedLines, ArrayList <String> flaggedMethods) throws IOException {
+		
+		File result = new File("Antipattern detection\\Result.txt");
+		
+		if (!result.exists()) {
+			result.createNewFile();
+		}
+		FileWriter writer = new FileWriter (result.getAbsoluteFile());
+		BufferedWriter bw = new BufferedWriter(writer);
+		int count =0;
+		for(Map.Entry<String, ArrayList<Integer>> entry: flaggedLines.entrySet()){
+			bw.write("* Class "+ entry.getKey()+ " :\n");
+			for(int line:entry.getValue() ){
+			bw.write("line "+ line+ " : ");
+			bw.write("Method "+ flaggedMethods.get(count)+ "\n");
+			count+=1;}
+		}
+		bw.write(count + " lines flagged in total.");
+		bw.close();	
+	}
 	/*gettersetter
 	 * isColumn = false;
 	parser.setSource(unit);
