@@ -215,18 +215,22 @@ public class AntiPatternHandler extends AbstractHandler {
 			Mnode.accept(new ASTVisitor(){
 		public boolean visit(ReturnStatement node) {
 			for (IField f : fieldWithoutGet)
-				///////////////////////
-			if(node.getExpression()!= null && node.getExpression().toString().contains(f.getElementName()+" ="))
+			if(node.getExpression()!= null){
+				String expression = node.getExpression().toString();
+			if (!expression.contains ("=") && expression.contains (f.getElementName()) ||
+			expression.contains(f.getElementName()+" ="))
 				try {					
 				IMethod m = (IMethod)unit.getElementAt(Mnode.getStartPosition());
 				dbMethods.add(m);
 				addCallersToDbMethods(m);} 
-			catch (JavaModelException e) {
+				catch (JavaModelException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+			}
 			return false;													}
 			});
+			///
 			return true;	}
 		});
 	}
@@ -336,8 +340,7 @@ public class AntiPatternHandler extends AbstractHandler {
 										flaggedLines.put(cu.getJavaElement().getElementName(), lines);
 										//flaggedMethods.add(node.getName().toString());
 									}
-									else //if(!flaggedLines.get(cu.getJavaElement().getElementName()).contains(cu.getLineNumber(node.getStartPosition()))){
-										{
+									else if(!flaggedLines.get(cu.getJavaElement().getElementName()).contains(cu.getLineNumber(node.getStartPosition())+ " -> Method " + node.getName().toString())){
 										ArrayList <String> lines = new ArrayList<>();
 										lines = flaggedLines.get(cu.getJavaElement().getElementName());
 										lines.add(cu.getLineNumber(node.getStartPosition())+ " -> Method " + node.getName().toString());
