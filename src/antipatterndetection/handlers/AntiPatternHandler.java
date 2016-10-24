@@ -4,8 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,16 +34,19 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.DoStatement;
 import org.eclipse.jdt.core.dom.EnhancedForStatement;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.MarkerAnnotation;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.WhileStatement;
 import org.eclipse.jdt.internal.corext.callhierarchy.CallHierarchy;
 import org.eclipse.jdt.internal.corext.callhierarchy.MethodWrapper;
 import org.eclipse.jdt.internal.corext.codemanipulation.GetterSetterUtil;
+import org.eclipse.jdt.core.dom.ReturnStatement;
 
 public class AntiPatternHandler extends AbstractHandler {
 
@@ -52,8 +56,8 @@ public class AntiPatternHandler extends AbstractHandler {
 	
 	IField[] classVariables;
 	String currentMethod;
-	Map<String, ArrayList<Integer>> flaggedLines = new HashMap< String, ArrayList<Integer>>();
-	ArrayList <String> flaggedMethods = new ArrayList<String>();
+	Map<String, ArrayList<String>> flaggedLines = new HashMap< String, ArrayList<String>>();
+
 	public AntiPatternHandler() {
 	}
 
@@ -67,7 +71,7 @@ public class AntiPatternHandler extends AbstractHandler {
 		IProject[] projects = root.getProjects();
 		for (IProject project : projects) {
 			try {
-				if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
+				if (project.isOpen() && project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
 					IPackageFragment[] packages = JavaCore.create(project).getPackageFragments();
 					for (IPackageFragment mypackage : packages) {
 						if (mypackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
@@ -79,6 +83,7 @@ public class AntiPatternHandler extends AbstractHandler {
 									//TODO : REMOVE 
 									//System.out.println( unit.getElementName()+ "\n");									
 									getGetterSetter(unit);
+									//System.out.println(dbMethods);
 									//findDbAccessingMethods(unit); 	
 									//resetLists();
 							}
@@ -93,9 +98,10 @@ public class AntiPatternHandler extends AbstractHandler {
 			}
 		}
 		
+		
 		for (IProject project : projects) {
 			try {
-				if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
+				if (project.isOpen() && project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
 					IPackageFragment[] packages = JavaCore.create(project).getPackageFragments();
 					for (IPackageFragment mypackage : packages) 
 						if (mypackage.getKind() == IPackageFragmentRoot.K_SOURCE) 
@@ -111,17 +117,13 @@ public class AntiPatternHandler extends AbstractHandler {
 			//TODO
 		//make in a report format
 		try {
-			writeResult(flaggedLines, flaggedMethods);
+			writeResult(flaggedLines);
 			System.out.println("analysis finished.");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-/*		int count = 0;
-		for(ArrayList<Integer> l : flaggedLines.values())
-			count+= l.size();
-		System.out.println(count+ " lines flagged in:");
-		System.out.println(flaggedLines);*/
+
 		return null;
 	}
 	
@@ -164,6 +166,8 @@ public class AntiPatternHandler extends AbstractHandler {
 	private void getGetterSetter(ICompilationUnit unit){
 		IType[] typeDeclarationList;
 		IAnnotation[] annotations;
+		ArrayList <IField> fieldWithoutGet = new ArrayList<>(); 
+		ArrayList <IField> fieldWithoutSet = new ArrayList<>(); 
 		try {
 			typeDeclarationList = unit.getTypes();
 			for (IType typeDeclaration : typeDeclarationList){ 		     
@@ -178,10 +182,16 @@ public class AntiPatternHandler extends AbstractHandler {
 						addCallersToDbMethods(GetterSetterUtil.getGetter(f));
 						//System.out.println("get callers of"+ GetterSetterUtil.getGetter(f));
 						}
+						else{
+							fieldWithoutGet.add(f);					
+						}
 						if(GetterSetterUtil.getSetter(f)!= null){
 						dbMethods.add(GetterSetterUtil.getSetter(f));
 						addCallersToDbMethods(GetterSetterUtil.getSetter(f));
 						//System.out.println("get callers of"+ GetterSetterUtil.getSetter(f));
+						}
+						else{
+							fieldWithoutSet.add(f);	
 						}
 					}
 				}
@@ -190,9 +200,60 @@ public class AntiPatternHandler extends AbstractHandler {
 		} catch (JavaModelException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}						 
+		}
+		if(!fieldWithoutGet.isEmpty())
+			findGetter(unit, fieldWithoutGet);
+		if(!fieldWithoutSet.isEmpty())
+			findSetter(unit, fieldWithoutSet);
 	}
 
+	public void findGetter(ICompilationUnit unit, ArrayList<IField> fieldWithoutGet){
+		parser.setSource(unit);
+		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+		cu.accept(new ASTVisitor() {
+		public boolean visit(MethodDeclaration Mnode){
+			Mnode.accept(new ASTVisitor(){
+		public boolean visit(ReturnStatement node) {
+			for (IField f : fieldWithoutGet)
+				///////////////////////
+			if(node.getExpression()!= null && node.getExpression().toString().contains(f.getElementName()+" ="))
+				try {					
+				IMethod m = (IMethod)unit.getElementAt(Mnode.getStartPosition());
+				dbMethods.add(m);
+				addCallersToDbMethods(m);} 
+			catch (JavaModelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			return false;													}
+			});
+			return true;	}
+		});
+	}
+	public void findSetter(ICompilationUnit unit, ArrayList<IField> fieldWithoutSet){
+		parser.setSource(unit);
+		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+		cu.accept(new ASTVisitor() {
+		public boolean visit(MethodDeclaration Mnode){
+			Mnode.accept(new ASTVisitor(){
+				public boolean visit(Assignment node) {
+					for (IField f : fieldWithoutSet)
+					if(node.getLeftHandSide().toString().equals("this."+f.getElementName()))
+					try {
+						IMethod m = (IMethod)unit.getElementAt(Mnode.getStartPosition());
+						dbMethods.add(m);
+						addCallersToDbMethods(m);
+				} catch (JavaModelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			return false;													}
+			});
+			return true;	}
+		});
+	}
+
+	
 	int size =0;
 	private void addCallersToDbMethods(IMethod m){
 		if(size==dbMethods.size())
@@ -265,21 +326,23 @@ public class AntiPatternHandler extends AbstractHandler {
 							for(IMethod method : dbMethods){
 								if(node.getName().toString().equals(method.getElementName())){
 									if(node.resolveMethodBinding()!= null 
-											&& method.getCompilationUnit()!=null
-											&& method.getCompilationUnit().getElementName().equals(		
-											node.resolveMethodBinding().getDeclaringClass().getName()+".java" )){
-									if(!flaggedLines.containsKey(cu.getJavaElement().getElementName())){
-										ArrayList <Integer> lines = new ArrayList<>();
-										lines.add(cu.getLineNumber(node.getStartPosition()));
+									   && method.getCompilationUnit()!=null
+									   && method.getCompilationUnit().getElementName().equals(		
+										node.resolveMethodBinding().getDeclaringClass().getName()+".java" )){
+									   //&& method.getParameterTypes().equals(node.arguments()typeArguments())){
+										if(!flaggedLines.containsKey(cu.getJavaElement().getElementName())){
+										ArrayList <String> lines = new ArrayList<>();
+										lines.add(cu.getLineNumber(node.getStartPosition())+ " -> Method " + node.getName().toString());
 										flaggedLines.put(cu.getJavaElement().getElementName(), lines);
-										flaggedMethods.add(node.getName().toString());
+										//flaggedMethods.add(node.getName().toString());
 									}
-									else if(!flaggedLines.get(cu.getJavaElement().getElementName()).contains(cu.getLineNumber(node.getStartPosition()))){
-										ArrayList <Integer> lines = new ArrayList<>();
+									else //if(!flaggedLines.get(cu.getJavaElement().getElementName()).contains(cu.getLineNumber(node.getStartPosition()))){
+										{
+										ArrayList <String> lines = new ArrayList<>();
 										lines = flaggedLines.get(cu.getJavaElement().getElementName());
-										lines.add(cu.getLineNumber(node.getStartPosition()));
+										lines.add(cu.getLineNumber(node.getStartPosition())+ " -> Method " + node.getName().toString());
 										flaggedLines.put(cu.getJavaElement().getElementName(), lines);
-										flaggedMethods.add(node.getName().toString());
+										//flaggedMethods.add(node.getName().toString());
 										//	System.out.println("Instance found in "+cu.getJavaElement().getElementName()+ " in line "+cu.getLineNumber(node.getStartPosition()));       					
 								}
 								}
@@ -318,9 +381,12 @@ public class AntiPatternHandler extends AbstractHandler {
 			}
 		});
 	}
-	public static void writeResult(Map<String, ArrayList<Integer>> flaggedLines, ArrayList <String> flaggedMethods) throws IOException {
-		
-		File result = new File("Antipattern detection\\Result.txt");
+	public static void writeResult(Map<String, ArrayList<String>> flaggedLines) throws IOException {
+		System.out.println("writing started.");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		Date date = new Date();
+		String sDate= sdf.format(date);
+		File result = new File("Antipattern detection\\Result " + sDate+ ".txt");
 		
 		if (!result.exists()) {
 			result.createNewFile();
@@ -328,11 +394,10 @@ public class AntiPatternHandler extends AbstractHandler {
 		FileWriter writer = new FileWriter (result.getAbsoluteFile());
 		BufferedWriter bw = new BufferedWriter(writer);
 		int count =0;
-		for(Map.Entry<String, ArrayList<Integer>> entry: flaggedLines.entrySet()){
-			bw.write("* Class "+ entry.getKey()+ " :\n");
-			for(int line:entry.getValue() ){
-			bw.write("line "+ line+ " : ");
-			bw.write("Method "+ flaggedMethods.get(count)+ "\n");
+		for(Map.Entry<String, ArrayList<String>> entry: flaggedLines.entrySet()){
+			bw.write("* Class "+ entry.getKey()+ ":\n");
+			for(String line:entry.getValue() ){
+			bw.write("line "+ line+ " \n");
 			count+=1;}
 		}
 		bw.write(count + " lines flagged in total.");
